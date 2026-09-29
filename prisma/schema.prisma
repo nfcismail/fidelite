@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("staff") // owner | staff
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  transactions Transaction[]
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique
+  cardId       String   @unique
+  stamps       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type       String   // earn | redeem | adjust
+  amount     Int
+  note       String?
+  staffId    String?
+  staff      User?    @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  rewardId   String?
+  createdAt  DateTime @default(now())
+}
+
+model Reward {
+  id             String  @id @default(cuid())
+  title          String
+  stampsRequired Int
+  active         Boolean @default(true)
+  sortOrder      Int     @default(0)
+}
+
+model Settings {
+  id            Int     @id @default(1)
+  brandName     String  @default("Moka Joy")
+  tagline       String  @default("La fidélité qui régale")
+  welcomeText   String  @default("Scannez, collectionnez, savourez.")
+  primaryColor  String  @default("#3D2314")
+  accentColor   String  @default("#C47A3A")
+  displayFont   String  @default("Fraunces")
+  bodyFont      String  @default("Source Sans 3")
+  logoUrl       String?
+  address       String  @default("Jet Sakan, Agadir 80000")
+  phone         String  @default("06 90 75 59 73")
+  instagramUrl  String  @default("https://www.instagram.com/mokajoycafe/")
+  mapsUrl       String  @default("https://www.google.com/maps/place/moka+joy/data=!4m2!3m1!1s0xdb3b7be6340dcbf:0x5e35730ef7bb1876")
+  stampsDefault Int     @default(10)
+}
