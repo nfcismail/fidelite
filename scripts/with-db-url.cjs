@@ -22,29 +22,48 @@ function loadEnvFile() {
   }
 }
 
+function isPostgresUrl(url) {
+  if (!url || url === "[SENSITIVE]") return false;
+  return (
+    url.startsWith("postgresql://") ||
+    url.startsWith("postgres://") ||
+    url.startsWith("prisma+postgres://")
+  );
+}
+
 loadEnvFile();
 
-const url =
-  process.env.DATABASE_URL ||
-  process.env.storage_DATABASE_URL ||
-  process.env.storage_POSTGRES_PRISMA_URL ||
-  process.env.storage_POSTGRES_URL ||
-  process.env.DATABASE_URL_DATABASE_URL ||
-  process.env.DATABASE_URL_POSTGRES_PRISMA_URL ||
-  process.env.POSTGRES_PRISMA_URL ||
-  process.env.POSTGRES_URL_NON_POOLING ||
-  process.env.POSTGRES_URL ||
-  process.env.STORAGE_URL ||
-  process.env.NEON_DATABASE_URL;
+const candidates = [
+  process.env.DATABASE_URL,
+  process.env.storage_DATABASE_URL,
+  process.env.storage_POSTGRES_PRISMA_URL,
+  process.env.storage_POSTGRES_URL_NON_POOLING,
+  process.env.storage_POSTGRES_URL,
+  process.env.DATABASE_URL_DATABASE_URL,
+  process.env.DATABASE_URL_POSTGRES_PRISMA_URL,
+  process.env.DATABASE_URL_POSTGRES_URL_NON_POOLING,
+  process.env.DATABASE_URL_POSTGRES_URL,
+  process.env.POSTGRES_PRISMA_URL,
+  process.env.POSTGRES_URL_NON_POOLING,
+  process.env.POSTGRES_URL,
+  process.env.STORAGE_URL,
+  process.env.NEON_DATABASE_URL,
+];
+
+const url = candidates.find(isPostgresUrl);
 
 if (!url) {
+  const sample = (process.env.DATABASE_URL || "").slice(0, 24);
   console.error(
-    "Missing database URL. Set DATABASE_URL (or POSTGRES_URL / STORAGE_URL) in Vercel → Settings → Environment Variables."
+    "No valid Postgres DATABASE_URL found. Got prefix:",
+    sample || "(empty)",
+    "- Set a postgresql:// URL in Vercel env (or use Neon storage_DATABASE_URL)."
   );
   process.exit(1);
 }
 
 process.env.DATABASE_URL = url;
+console.log("DB URL protocol OK:", url.split(":")[0] + ":");
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
