@@ -26,6 +26,11 @@ loadEnvFile();
 
 const url =
   process.env.DATABASE_URL ||
+  process.env.storage_DATABASE_URL ||
+  process.env.storage_POSTGRES_PRISMA_URL ||
+  process.env.storage_POSTGRES_URL ||
+  process.env.DATABASE_URL_DATABASE_URL ||
+  process.env.DATABASE_URL_POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL_NON_POOLING ||
   process.env.POSTGRES_URL ||
