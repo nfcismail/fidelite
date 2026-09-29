@@ -8,8 +8,43 @@ Inspiré de [Fidelix](https://fidelix.ma), conçu pour un seul point de vente.
 
 - Node.js 20+
 - npm
+- Une base **PostgreSQL** (Neon recommandé — gratuit avec Vercel)
 
-## Installation
+## Déploiement Vercel (GitHub)
+
+Le repo est connecté à Vercel. Pour que l’app fonctionne vraiment :
+
+### 1. Base de données Neon
+
+1. Ouvrez le projet sur [vercel.com](https://vercel.com)
+2. **Storage** → **Create Database** → **Neon** (Postgres)
+3. Reliez-la au projet — Vercel injecte `DATABASE_URL` automatiquement
+
+### 2. Variables d’environnement
+
+Dans **Settings → Environment Variables**, ajoutez (Production + Preview) :
+
+| Variable | Exemple |
+|----------|---------|
+| `AUTH_SECRET` | longue chaîne aléatoire |
+| `ADMIN_PASSWORD` | mot de passe du compte owner |
+| `NEXT_PUBLIC_APP_URL` | `https://votre-projet.vercel.app` |
+
+`DATABASE_URL` vient de Neon. Puis **Redeploy**.
+
+### 3. NFC
+
+Programmez la carte avec :
+
+```
+https://votre-projet.vercel.app/join?src=nfc
+```
+
+## Installation locale
+
+1. Créez une DB Neon (ou Postgres local) et copiez l’URL.
+2. Copiez `.env.example` → `.env` et remplissez les valeurs.
+3. Puis :
 
 ```bash
 npm install
@@ -23,50 +58,27 @@ Ouvrez [http://localhost:3000](http://localhost:3000).
 
 | Rôle | Email | Mot de passe |
 |------|-------|--------------|
-| Propriétaire | `admin@mokajoy.ma` | valeur de `ADMIN_PASSWORD` dans `.env` (défaut : `mokajoy2026`) |
+| Propriétaire | `admin@mokajoy.ma` | valeur de `ADMIN_PASSWORD` |
 | Serveur | `staff@mokajoy.ma` | `staff123` |
-
-Copiez `.env.example` vers `.env` et changez `AUTH_SECRET` + `ADMIN_PASSWORD` avant la prod.
 
 ## Parcours
 
-1. **Client** : tape la carte NFC / scanne le QR → `/join` → reçoit `/c/MJ-XXXXXXXX`
-2. **Caisse** : `/scan` → scanne le QR client ou cherche par téléphone → **+1 tampon** (avec confirmation) ou **échange**
+1. **Client** : NFC / QR → `/join` → carte `/c/MJ-XXXXXXXX`
+2. **Caisse** : `/scan` → +1 tampon ou échange
 3. **Admin** : `/admin` → clients, récompenses, marque & polices, équipe
-
-## Programmer la carte NFC
-
-1. Déployez l’app (ou utilisez un tunnel type Cloudflare / ngrok en test).
-2. Définissez `NEXT_PUBLIC_APP_URL` sur l’URL publique (ex. `https://fidelite.mokajoy.ma`).
-3. Avec une app type **NFC Tools**, écrivez une URL NDEF sur la carte :
-
-```
-https://votre-domaine/join?src=nfc
-```
-
-ou simplement :
-
-```
-https://votre-domaine/join
-```
-
-Le même lien peut être imprimé en QR sur le comptoir.
-
-La carte digitale du client contient un QR pointant vers `/c/{cardId}` — c’est ce QR que l’équipe scanne en caisse.
 
 ## Scripts
 
 | Commande | Description |
 |----------|-------------|
-| `npm run dev` | Serveur de développement |
-| `npm run build` | Build production |
-| `npm run start` | Lancer le build |
-| `npm run db:setup` | Créer la base SQLite + seed |
-| `npm run db:seed` | Re-seed (mots de passe admin inclus) |
+| `npm run dev` | Développement |
+| `npm run build` | Build (+ db push + seed) |
+| `npm run db:setup` | Schéma + seed |
+| `npm run db:seed` | Re-seed admin / settings |
 
 ## Stack
 
-Next.js 15 · TypeScript · Tailwind · Prisma · SQLite · jose (sessions)
+Next.js 15 · TypeScript · Tailwind · Prisma · PostgreSQL (Neon) · jose
 
 ## Liens boutique
 
