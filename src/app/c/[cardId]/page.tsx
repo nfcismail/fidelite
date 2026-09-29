@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { getSettings } from "@/lib/utils";
 import { CardQr } from "@/components/CardQr";
 import { StampGrid } from "@/components/StampGrid";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default async function CustomerCardPage({
   params,
@@ -35,23 +36,38 @@ export default async function CustomerCardPage({
     >
       <div className="mx-auto max-w-md">
         <div className="mb-6 flex items-center justify-between">
-          <Link href="/" className="text-sm text-[var(--espresso)]/60">
-            {settings.brandName}
-          </Link>
+          <BrandLogo size="sm" />
           <span className="rounded-full bg-white/70 px-3 py-1 text-xs tracking-wide text-[var(--espresso)]/60">
             {customer.cardId}
           </span>
         </div>
 
         <div className="overflow-hidden rounded-[1.75rem] bg-[var(--primary)] text-[#F7F0E8] shadow-xl">
-          <div className="p-6 pb-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/50">
-              Carte fidélité
-            </p>
-            <h1 className="mt-2 font-display text-3xl">{customer.name}</h1>
-            <p className="mt-1 text-sm text-white/60">{settings.tagline}</p>
+          <div
+            className="relative flex items-center gap-4 px-6 pb-2 pt-6"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 85% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 45%)",
+            }}
+          >
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#F7F0E8]/12 ring-1 ring-white/20">
+              <Image
+                src="/moka-joy-logo.png"
+                alt=""
+                width={48}
+                height={48}
+                className="rounded-full object-contain"
+              />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.2em] text-white/50">
+                Carte fidélité
+              </p>
+              <h1 className="mt-1 font-display text-3xl">{customer.name}</h1>
+              <p className="mt-1 text-sm text-white/60">{settings.tagline}</p>
+            </div>
           </div>
-          <div className="mx-6 mb-6 flex justify-center rounded-2xl bg-[#F7F0E8] p-4">
+          <div className="mx-6 mb-6 mt-4 flex justify-center rounded-2xl bg-[#F7F0E8] p-4">
             <CardQr cardId={customer.cardId} size={200} />
           </div>
           <div className="border-t border-white/10 px-6 py-5">
@@ -64,7 +80,7 @@ export default async function CustomerCardPage({
                 </p>
               </div>
               {nextReward && customer.stamps >= nextReward.stampsRequired && (
-                <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-sm">
+                <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-sm text-white">
                   Prêt à échanger
                 </span>
               )}

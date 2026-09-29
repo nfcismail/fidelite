@@ -2,7 +2,7 @@
 
 import { FormEvent, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { BrandLogo, LoginIcon } from "@/components/BrandLogo";
 
 function LoginForm() {
   const router = useRouter();
@@ -39,9 +39,7 @@ function LoginForm() {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <Link href="/" className="font-display text-2xl text-[var(--primary)]">
-        Moka Joy
-      </Link>
+      <BrandLogo size="md" />
       <h1 className="mt-8 font-display text-3xl text-[var(--primary)]">
         Connexion équipe
       </h1>
@@ -73,8 +71,9 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-[var(--primary)] py-3.5 font-semibold text-[#F7F0E8] disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] py-3.5 font-semibold text-white shadow-[0_10px_24px_-12px_var(--accent)] disabled:opacity-60"
         >
+          <LoginIcon className="h-4 w-4" />
           {loading ? "…" : "Se connecter"}
         </button>
       </form>

@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { getSettings } from "@/lib/utils";
 import { prisma } from "@/lib/db";
+import { BrandLogo, LoginIcon } from "@/components/BrandLogo";
 
 export default async function HomePage() {
   const settings = await getSettings();
@@ -23,17 +25,19 @@ export default async function HomePage() {
       />
 
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
-        <span className="font-display text-xl font-semibold tracking-tight text-[var(--primary)]">
-          {settings.brandName}
-        </span>
-        <div className="flex items-center gap-3 text-sm">
-          <Link href="/join" className="hidden text-[var(--espresso)]/70 sm:inline">
+        <BrandLogo size="md" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href="/join"
+            className="hidden rounded-full px-3 py-2 text-sm font-medium text-[var(--primary)]/80 transition hover:bg-[var(--primary)]/5 hover:text-[var(--primary)] sm:inline"
+          >
             Rejoindre
           </Link>
           <Link
             href="/login"
-            className="rounded-full bg-[var(--primary)] px-4 py-2 text-[#F7F0E8]"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_20px_-10px_var(--accent)] transition hover:brightness-110"
           >
+            <LoginIcon className="h-4 w-4" />
             Connexion
           </Link>
         </div>
@@ -80,13 +84,25 @@ export default async function HomePage() {
             />
             <div className="overflow-hidden rounded-[1.75rem] border border-[var(--primary)]/10 bg-[var(--primary)] text-[#F7F0E8] shadow-2xl">
               <div
-                className="h-44 bg-cover bg-center"
+                className="relative flex h-48 items-center justify-center"
                 style={{
                   backgroundImage:
-                    "linear-gradient(180deg, transparent 20%, #2a160c 100%), radial-gradient(circle at 30% 40%, #C47A3A 0%, transparent 45%), radial-gradient(circle at 70% 30%, #8B5A2B 0%, #2a160c 60%)",
+                    "radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 45%, transparent) 0%, transparent 55%), linear-gradient(165deg, #5a3420 0%, #2a160c 70%)",
                 }}
-              />
-              <div className="space-y-3 p-6">
+              >
+                <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.18)_1px,transparent_0)] [background-size:18px_18px]" />
+                <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-[#F7F0E8]/10 ring-1 ring-white/25 shadow-[0_20px_40px_-20px_rgba(0,0,0,0.7)] backdrop-blur-sm">
+                  <Image
+                    src="/moka-joy-logo.png"
+                    alt="Moka Joy"
+                    width={96}
+                    height={96}
+                    className="rounded-full object-contain"
+                    priority
+                  />
+                </div>
+              </div>
+              <div className="space-y-3 p-6 pt-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-[#F7F0E8]/55">
                   Carte digitale
                 </p>
@@ -96,8 +112,10 @@ export default async function HomePage() {
                   {Array.from({ length: 10 }).map((_, i) => (
                     <span
                       key={i}
-                      className={`h-3 w-3 rounded-full ${
-                        i < 7 ? "bg-[var(--accent)]" : "bg-white/15"
+                      className={`h-3.5 w-3.5 rounded-full ${
+                        i < 7
+                          ? "bg-[var(--accent)] shadow-[0_0_10px_color-mix(in_srgb,var(--accent)_55%,transparent)]"
+                          : "bg-white/15"
                       }`}
                     />
                   ))}
